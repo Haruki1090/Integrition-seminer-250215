@@ -19,7 +19,7 @@ function doPost(e) {
   try {
     const contentType = e.postData.type;
     const payload = JSON.parse(e.postData.contents);
-    // logMessage(`Received payload: ${JSON.stringify(payload, null, 2)}`, 'INFO');
+    logMessage(`Received payload: ${JSON.stringify(payload, null, 2)}`, 'INFO'); // インデントを追加して可読性を向上
     
     // NotionからのWebhookかLINEからのメッセージかを判別
     if (isNotionWebhook(payload)) {
@@ -70,7 +70,7 @@ function handleNotionWebhook(payload) {
     const nextBillingDate = payload.properties.NextBillingDate.date.start;
     const pageId = payload.id; // NotionのページID
 
-    // logMessage(`Handling Notion webhook for PageID: ${pageId}`, 'INFO');
+    logMessage(`Handling Notion webhook for PageID: ${pageId}`, 'INFO');
 
     // カレンダー関連のコードを削除
 
@@ -91,7 +91,7 @@ function handleLineMessage(payload) {
     events.forEach(event => {
       if (event.type === 'message' && event.message.type === 'text') {
         const userId = event.source.userId; // UserIDを取得
-        // logMessage(`UserID: ${userId}`, 'INFO');
+        logMessage(`UserID: ${userId}`, 'INFO');
 
         const userMessage = event.message.text.trim();
 
@@ -165,19 +165,7 @@ function handleRegisterCommand(message, userId) {
       userId: userId // ユーザーIDを追加
     });
 
-    // logMessage(`Subscription created with PageID: ${pageId}`, 'INFO');
-
-    // カレンダー登録機能を削除したため、以下のコードを削除
-    /*
-    addCalendarEvent({
-      name,
-      amount,
-      type,
-      nextBillingDate: nextBillingDateStr,
-      status: 'Active',
-      pageId: pageId
-    });
-    */
+    logMessage(`Subscription created with PageID: ${pageId}`, 'INFO');
 
     // 通知
     sendTextMessage(
@@ -364,7 +352,7 @@ function notionCreateSubscription({ name, amount, type, startDate, nextBillingDa
         throw new Error('Notionにサブスクリプションを作成できませんでした。');
       }
 
-      // logMessage(`Notion Subscription Created: ${responseData.id}`, 'INFO');
+      logMessage(`Notion Subscription Created: ${responseData.id}`, 'INFO');
       return responseData.id; // ページIDを返す
     } else {
       // エラーメッセージを含む詳細なレスポンスをログに記録
@@ -464,7 +452,7 @@ function notionQueryByStatuses(statusArray, userId) {
       if (!responseData.results) {
         throw new Error('Notionからデータを取得できませんでした。');
       }
-      // logMessage(`Notion Query by Statuses: Retrieved ${responseData.results.length} records.`, 'INFO');
+      logMessage(`Notion Query by Statuses: Retrieved ${responseData.results.length} records.`, 'INFO');
       return responseData.results;
     } else {
       logMessage(`Notion API Error: ${responseBody}`, 'ERROR');
@@ -515,7 +503,7 @@ function notionQueryByDateAndStatus(dateStr, status) {
       if (!responseData.results) {
         throw new Error('Notionからデータを取得できませんでした。');
       }
-      // logMessage(`Notion Query by Date and Status: Retrieved ${responseData.results.length} records.`, 'INFO');
+      logMessage(`Notion Query by Date and Status: Retrieved ${responseData.results.length} records.`, 'INFO');
       return responseData.results;
     } else {
       logMessage(`Notion API Error: ${responseBody}`, 'ERROR');
@@ -571,7 +559,7 @@ function sendTextMessage(text) {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    // logMessage(`Response: ${response.getContentText()}`, 'INFO');
+    logMessage(`Response: ${response.getContentText()}`, 'INFO');
   } catch (error) {
     logMessage(`sendTextMessage Error: ${error}`, 'ERROR');
   }
